@@ -1,14 +1,32 @@
-"Ваш код повинен зробити PATCH-запит до вказаного URL, де {userId} – це ID існуючого користувача."
-"Для оновлення користувача передайте в запит нові дані, наприклад, нове ім’я."
-"Поверніть відповідь від сервера з оновленими даними користувача."
+async function updateUser(id, updatedData) {
+  try {
+    // Формуємо URL для PATCH-запиту, де {userId} - це id користувача
+    const url = `https://jsonplaceholder.typicode.com/users/${id}`;
+    
+    // Виконуємо PATCH-запит
+    const response = await fetch(url, {
+      method: 'PATCH', // Метод запиту
+      headers: {
+        'Content-Type': 'application/json' // Вказуємо, що дані відправляються у форматі JSON
+      },
+      body: JSON.stringify(updatedData) // Перетворюємо об'єкт оновлених даних в JSON
+    });
 
-"https://jsonplaceholder.typicode.com/users - адреса куди робити запит"
+    // Перевіряємо, чи запит пройшов успішно
+    if (!response.ok) {
+      throw new Error('Щось пішло не так');
+    }
 
-
-function updateUser(id, updatedData) {
-  // Ваш код
+    // Повертаємо відповідь від сервера
+    const result = await response.json();
+    return result; // Повертаємо оновлені дані користувача
+  } catch (error) {
+    console.error('Помилка:', error);
+    return null; // У разі помилки повертаємо null
+  }
 }
 
-console.log(updateUser(1, { name: 'New Name' }));
-
-module.exports = updateUser;
+// Приклад виклику функції
+updateUser(1, { name: 'New Name' })
+  .then(result => console.log(result)) // Виводимо результат після успішного оновлення користувача
+  .catch(error => console.log('Помилка:', error));
